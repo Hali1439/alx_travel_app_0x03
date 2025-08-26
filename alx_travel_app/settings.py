@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_yasg',
     # Your apps
-    'listings',
+     "alx_travel_app.listings",
+
 ]
 
 MIDDLEWARE = [
