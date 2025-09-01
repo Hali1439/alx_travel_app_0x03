@@ -93,3 +93,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Static & media
+/staticfiles/
+/media/

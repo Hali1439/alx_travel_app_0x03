@@ -17,7 +17,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # -----------------------------
 # Initialize django-environ
 env = environ.Env(
-    DEBUG=(bool, True)  # default DEBUG is True
+    DEBUG=(bool, False)  # default DEBUG is True
 )
 
 # Load .env file explicitly from BASE_DIR
@@ -129,9 +129,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # REST FRAMEWORK
 # -----------------------------
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.AllowAny'],
-    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.openapi.AutoSchema',
 }
+
 
 # -----------------------------
 # CORS SETTINGS
