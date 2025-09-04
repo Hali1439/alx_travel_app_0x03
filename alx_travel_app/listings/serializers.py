@@ -1,29 +1,36 @@
-from .models import Listing, Booking, User, Review
+# alx_travel_app/listings/serializers.py
 from rest_framework import serializers
-
+from django.contrib.auth.models import User
+from .models import Listing, Booking, Review
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'phone_number', 'role', 'created_at']
-        
-class ReviewSerializer (serializers.ModelSerializer):
+        fields = ["id", "username", "first_name", "last_name", "email"]
+
+class ReviewSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
     class Meta:
         model = Review
-        fields = ['id', 'user', 'listing', 'rating', 'comment', 'created_at']
+        fields = ["id", "user", "listing", "rating", "comment", "created_at"]
+
+    def validate_rating(self, value):
+        if value < 1 or value > 5:
+            raise serializers.ValidationError("Rating must be between 1 and 5.")
+        return value
 
 class ListingSerializer(serializers.ModelSerializer):
-    host = UserSerializer(read_only=True)
-    reviews = ReviewSerializer(many=True, read_only=True) 
-    
+    reviews = ReviewSerializer(many=True, read_only=True)
+
     class Meta:
         model = Listing
-        fields = ["id", 'name', 'description', 'location', 'price_per_night', 'created_at', 'updated_at']
+        fields = ["id", "title", "description", "location", "price_per_night", "created_at", "reviews"]
 
 class BookingSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-    listing = ListingSerializer(read_only=True)
-    
+    # accept raw IDs on write; return full nested on read (nice DX)
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    listing = serializers.PrimaryKeyRelatedField(queryset=Listing.objects.all())
+
     class Meta:
         model = Booking
-        fields = ['id', 'listing', 'start_date', 'end_date', 'status', 'created_at', 'user']
+        fields = ["id", "listing", "user", "check_in", "check_out", "guests"]

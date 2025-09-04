@@ -1,13 +1,15 @@
 # listings/urls.py
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ListingViewSet, BookingViewSet, InitiatePaymentView, VerifyPaymentView
+from .views import ListingViewSet, BookingViewSet, InitiatePaymentView, VerifyPaymentView, index
 
 router = DefaultRouter()
 router.register(r'listings', ListingViewSet, basename='listing')
 router.register(r'bookings', BookingViewSet, basename='booking')
 
 urlpatterns = [
+    path("", index, name="listings-index"),  # handles /listings/
+
     # API routes from DRF router
     path("api/", include(router.urls)),
 

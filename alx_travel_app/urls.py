@@ -1,11 +1,10 @@
 # alx_travel_app/urls.py
 from django.contrib import admin
-from django.urls import path, include, re_path
-from rest_framework import permissions
+from django.urls import path, include
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-from django.http import HttpResponse
-from alx_travel_app.listings.views import InitiatePaymentView, VerifyPaymentView
+from rest_framework import permissions
+from alx_travel_app.listings.views import index  # reuse as homepage if you like
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -21,22 +20,11 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    # Default homepage
-    path("", lambda request: HttpResponse("Welcome to ALX Travel API 🚀")),
-
-    # Django Admin
-    path("admin/", admin.site.urls),
-
-    # Listings + Bookings API
-    path("listings/", include("alx_travel_app.listings.urls")),
-
-    # Payment endpoints
-    path("payments/initiate/", InitiatePaymentView.as_view(), name="initiate-payment"),
-    path("payments/verify/<str:tx_ref>/", VerifyPaymentView.as_view(), name="verify-payment"),
-
-    # Swagger & Redoc docs
-    re_path(r"^swagger(?P<format>\.json|\.yaml)$",
-            schema_view.without_ui(cache_timeout=0), name="schema-json"),
+    path("", index, name="home"),                                  # /
+    path("admin/", admin.site.urls),                               # /admin/
+    path("listings/", include("alx_travel_app.listings.urls_web")),# /listings/
+    path("api/", include("alx_travel_app.listings.urls_api")),     # /api/...
+    path('api-auth/', include('rest_framework.urls')),
     path("swagger/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
 ]
