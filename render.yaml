@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: alx-travel-app
+    env: python
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate"
+    startCommand: "gunicorn alx_travel_app.wsgi --log-file -"
+    envVars:
+      - key: SECRET_KEY
+        value: your-secret-key
+      - key: DEBUG
+        value: False
+      - key: DB_NAME
+        value: your_db_name
+      - key: DB_USER
+        value: your_db_user
+      - key: DB_PASSWORD
+        value: your_db_password
+      - key: DB_HOST
+        value: your_db_host
+      - key: DB_PORT
+        value: 3306
+      - key: CELERY_BROKER_URL
+        value: amqp://user:password@host/vhost
+      - key: CELERY_RESULT_BACKEND
+        value: rpc://
+      - key: EMAIL_HOST_USER
+        value: your_email
+      - key: EMAIL_HOST_PASSWORD
+        value: your_password
+
+  - type: worker
+    name: celery-worker
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "celery -A alx_travel_app worker --loglevel=info"
